@@ -79,8 +79,7 @@ app.route('/articles')
 
 app.route('/articles/:articleTitle')
     .get((req, res) => {
-        const requestedArticleTitle = req.params.articleTitle;
-        Article.findOne({title: requestedArticleTitle}, (err, foundArticle) => {
+        Article.findOne({title: req.params.articleTitle}, (err, foundArticle) => {
             if (foundArticle) {
                 res.send({
                     title: foundArticle.title,
@@ -90,6 +89,18 @@ app.route('/articles/:articleTitle')
                 res.send(err);
             }
         });
+    })
+    .put((req, res) => {
+        Article.findOneAndUpdate(
+            {title: req.params.articleTitle},
+            {title: req.body.title, content: req.body.content},
+            {overwrite: true},
+            (err) => {
+                if (!err) {
+                    res.send("Successfully updated articles");
+                }
+            }
+        );
     });
 
 // ---------- START DEAD CODE ----------
