@@ -64,6 +64,17 @@ app.post('/articles', (req, res) => {
     });
 });
 
+//create DELETE route to delete all articles
+app.delete('/articles', (req, res) => {
+    Article.deleteMany((err) => {           //deleteMany with no parameter will delete ALL
+        if (!err) {                         //if no error, send success message
+            res.send("Successfully deleted all articles");
+        } else {                            //otehrwise
+            res.send(err);                  //send error message to client
+        }
+    })
+});
+
 //specify port for app to listen on.
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
