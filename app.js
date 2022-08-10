@@ -6,6 +6,8 @@ const bodyParser = require('body-parser');
 const ejs = require('ejs');
 //npm i mongoose then require
 const mongoose = require('mongoose');
+// npm i lodash then require
+const _ = require('lodash');
 
 //initialise app w/ express method
 const app = express();
@@ -36,7 +38,8 @@ const articleSchema = new mongoose.Schema({
 //create data model for articles
 const Article = mongoose.model("Article", articleSchema);
 
-//refactor '/articles' route to use chained route handlers (will comment dead code for reference.)
+//////////////// REQUESTS TARGETTING ALL ARTICLES //////////////////
+
 app.route('/articles')
     .get((req, res) => {
         Article.find((err, foundArticles) => {  //Query Articles model with find method
@@ -72,7 +75,25 @@ app.route('/articles')
         });
     });
 
+//////////////// REQUESTS TARGETTING SPECIFIC ARTICLES //////////////////
+
+app.route('/articles/:articleTitle')
+    .get((req, res) => {
+        const requestedArticleTitle = req.params.articleTitle;
+        Article.findOne({title: requestedArticleTitle}, (err, foundArticle) => {
+            if (foundArticle) {
+                res.send({
+                    title: foundArticle.title,
+                    content: foundArticle.content
+                });
+            } else {
+                res.send(err);
+            }
+        });
+    });
+
 // ---------- START DEAD CODE ----------
+//DEAD CODE FEATURES ROUTES WITHOUT CHAINING FOR REFERENCE
 //create GET route to fetch all articles
 // app.get('/articles', (req, res) => {        //When you go to articles route (GET)
 //   Article.find((err, foundArticles) => {    //Query Articles model with find method
