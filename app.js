@@ -122,13 +122,16 @@ app.route('/articles/:articleTitle')
     })
     //create DELETE request
     .delete((req, res) => {
-        Article.deleteOne({title: req.params.articleTitle}, (err) => {
-            if (!err) {
-                res.send("Successfully deleted the article");
-            } else {
-                res.send(err);
+        Article.deleteOne(
+            {title: req.params.articleTitle}, 
+            (err) => {
+                if (!err) {
+                    res.send("Successfully deleted the article");
+                } else {
+                    res.send(err);
+                }
             }
-        });
+        );
     });
 
 // ---------- START DEAD CODE ----------
