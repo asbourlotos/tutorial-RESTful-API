@@ -36,44 +36,82 @@ const articleSchema = new mongoose.Schema({
 //create data model for articles
 const Article = mongoose.model("Article", articleSchema);
 
+//refactor '/articles' route to use chained route handlers (will comment dead code for reference.)
+app.route('/articles')
+    .get((req, res) => {
+        Article.find((err, foundArticles) => {  //Query Articles model with find method
+            if (!err) {                         //If there are no errors
+                res.send(foundArticles);        //Send results back to client
+            } else {                            //Otherwise
+                res.send(err);                  //Send error message to client
+            }    
+          });
+    })
+    .post((req, res) => {
+        //create new article const to store data passed in
+        const newArticle = new Article ({
+            title: req.body.title,              //pass in the title as defined in Postman
+            content: req.body.content           //pass in the content as defined in Postman
+        });
+                                                //save the created Article to the database
+        newArticle.save((err) => {              //callback within save to send response back to Postman.
+            if (!err) {
+                res.send("Successfully added a new article.");
+            } else {
+                res.send(err);
+            }
+        });
+    })
+    .delete((req, res) => {
+        Article.deleteMany((err) => {           //deleteMany with no parameter will delete ALL
+            if (!err) {                         //if no error, send success message
+                res.send("Successfully deleted all articles");
+            } else {                            //otehrwise
+                res.send(err);                  //send error message to client
+            }
+        });
+    });
+
+// ---------- START DEAD CODE ----------
 //create GET route to fetch all articles
-app.get('/articles', (req, res) => {        //When you go to articles route (GET)
-  Article.find((err, foundArticles) => {    //Query Articles model with find method
-    if (!err) {                             //If there are no errors
-        res.send(foundArticles);            //Send results back to client
-    } else {                                //Otherwise
-        res.send(err);                      //Send error message to client
-    }    
-  });
-});
+// app.get('/articles', (req, res) => {        //When you go to articles route (GET)
+//   Article.find((err, foundArticles) => {    //Query Articles model with find method
+//     if (!err) {                             //If there are no errors
+//         res.send(foundArticles);            //Send results back to client
+//     } else {                                //Otherwise
+//         res.send(err);                      //Send error message to client
+//     }    
+//   });
+// });
 
 //create POST route to create one new article
-app.post('/articles', (req, res) => {
-    //create new article const to store data passed in
-    const newArticle = new Article ({
-        title: req.body.title,              //pass in the title as defined in Postman
-        content: req.body.content           //pass in the content as defined in Postman
-    });
-                                            //save the created Article to the database
-    newArticle.save((err) => {              //callback within save to send response back to Postman.
-        if (!err) {
-            res.send("Successfully added a new article.");
-        } else {
-            res.send(err);
-        }
-    });
-});
+// app.post('/articles', (req, res) => {
+//     //create new article const to store data passed in
+//     const newArticle = new Article ({
+//         title: req.body.title,              //pass in the title as defined in Postman
+//         content: req.body.content           //pass in the content as defined in Postman
+//     });
+//                                             //save the created Article to the database
+//     newArticle.save((err) => {              //callback within save to send response back to Postman.
+//         if (!err) {
+//             res.send("Successfully added a new article.");
+//         } else {
+//             res.send(err);
+//         }
+//     });
+// });
 
 //create DELETE route to delete all articles
-app.delete('/articles', (req, res) => {
-    Article.deleteMany((err) => {           //deleteMany with no parameter will delete ALL
-        if (!err) {                         //if no error, send success message
-            res.send("Successfully deleted all articles");
-        } else {                            //otehrwise
-            res.send(err);                  //send error message to client
-        }
-    })
-});
+// app.delete('/articles', (req, res) => {
+//     Article.deleteMany((err) => {           //deleteMany with no parameter will delete ALL
+//         if (!err) {                         //if no error, send success message
+//             res.send("Successfully deleted all articles");
+//         } else {                            //otehrwise
+//             res.send(err);                  //send error message to client
+//         }
+//     });
+// });
+// ---------- END DEAD CODE ----------
 
 //specify port for app to listen on.
 app.listen(port, () => {
