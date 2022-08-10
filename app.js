@@ -78,6 +78,7 @@ app.route('/articles')
 //////////////// REQUESTS TARGETTING SPECIFIC ARTICLES //////////////////
 
 app.route('/articles/:articleTitle')
+    //create GET request
     .get((req, res) => {
         Article.findOne({title: req.params.articleTitle}, (err, foundArticle) => {
             if (foundArticle) {
@@ -90,6 +91,7 @@ app.route('/articles/:articleTitle')
             }
         });
     })
+    //create PUT request
     .put((req, res) => {
         Article.findOneAndUpdate(
             {title: req.params.articleTitle},
@@ -98,9 +100,35 @@ app.route('/articles/:articleTitle')
             (err) => {
                 if (!err) {
                     res.send("Successfully updated articles");
+                } else {
+                    res.send(err);
                 }
             }
         );
+    })
+    //create PATCH request
+    .patch((req, res) => {
+        Article.findOneAndUpdate(
+            {title: req.params.articleTitle},
+            {$set: req.body},
+            (err) => {
+                if (!err) {
+                    res.send("Successfully patched articles");
+                } else {
+                    res.send(err);
+                }
+            }
+        );
+    })
+    //create DELETE request
+    .delete((req, res) => {
+        Article.deleteOne({title: req.params.articleTitle}, (err) => {
+            if (!err) {
+                res.send("Successfully deleted the article");
+            } else {
+                res.send(err);
+            }
+        });
     });
 
 // ---------- START DEAD CODE ----------
